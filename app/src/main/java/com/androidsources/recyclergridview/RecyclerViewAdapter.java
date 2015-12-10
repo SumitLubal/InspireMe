@@ -56,7 +56,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                                 //found object with refered URL
                                 itemList.get(i).setDownloadedImage(loadedImage);
                                 notifyDataSetChanged();
-
                                 Log.d("Recycler View", "Image is downloaded");
                             }
                         }
