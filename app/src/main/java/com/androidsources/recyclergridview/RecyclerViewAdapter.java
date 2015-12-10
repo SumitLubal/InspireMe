@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
-    private List<RowData> itemList;
+    List<RowData> itemList;
     private Context context;
 
     public RecyclerViewAdapter(Context context, List<RowData> itemList) {
@@ -40,6 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
         Log.d("RecyclingTest", "onBindViewHolder method is called");
         holder.wonderName.setText(itemList.get(position).getLikesAsAString());
+
         ImageLoader imageLoader = ImageLoader.getInstance();
         if(itemList.get(position).getWonderImageURL()==null){
             Log.d("Info", "URL is null");
@@ -48,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
             if(itemList.get(position).getDownloadedImage()!=null){
                 holder.wonderImage.setImageBitmap(itemList.get(position).getDownloadedImage());
             }else {
-                //imageLoader.displayImage(itemList.get(position).getWonderImageURL(), holder.wonderImage);
+                imageLoader.displayImage(itemList.get(position).getWonderImageURL(), holder.wonderImage);
                 ImageSize targetSize = new ImageSize(MainActivity.width, MainActivity.height); // result Bitmap will be fit to this size
 
                 imageLoader.loadImage(itemList.get(position).getWonderImageURL(), targetSize, new SimpleImageLoadingListener() {
@@ -59,6 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                                 //found object with refered URL
                                 itemList.get(i).setDownloadedImage(loadedImage);
                                 notifyDataSetChanged();
+
                                 Log.d("Recycler View", "Image is downloaded");
                             }
                         }
@@ -69,7 +71,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         //Toast.makeText(holder.wonderImage.getContext(), itemList.get(position).getWonderImageURL(), Toast.LENGTH_SHORT).show();
         if(position == itemList.size()-1){
             Log.d("RecyclerviewAdapter","Bottom is hit");
-
+            /*for(RowData row : itemList){
+                Log.d("RecyclerViewAdapter",row.getWonderImageURL());
+            }*/
         }
 
     }
@@ -77,27 +81,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public int getItemCount() {
         return this.itemList.size();
-    }
-    private class LongOperation extends AsyncTask<String, Void, String> {
-        List<RowData> fetchList = new ArrayList<RowData>();
-        @Override
-        protected String doInBackground(String... params) {
-
-            return "Executed";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            // / might want to change "executed" for the returned string passed
-            // into onPostExecute() but that is upto you
-            
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 }

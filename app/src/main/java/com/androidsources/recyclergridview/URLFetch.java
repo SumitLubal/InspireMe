@@ -6,21 +6,30 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class URLFetch extends AsyncTask<String, String, String> {
 
     final String TAG = "AsyncTaskParseJson.java";
-
+    MainActivity activity;
     // set your json string url here
     String yourJsonStringUrl = "http://sam042.netau.net/fetch.php";
 
     // contacts JSONArray
     JSONArray dataJsonArr = null;
+    List<RowData> list = new ArrayList<RowData>();
+    public URLFetch(MainActivity main_activity) {
+        activity = main_activity;
+    }
+
 
     @Override
     protected void onPreExecute() {}
 
     @Override
-    protected String doInBackground(String... arg0) {
+    protected String doInBackground(String... ar) {
 
         try {
 
@@ -47,8 +56,11 @@ public class URLFetch extends AsyncTask<String, String, String> {
                 // show the values in our logcat
                 Log.e(TAG, "firstname: " + type
                         + ", lastname: " + url
-                        + ", username: " + like+", "+dislike);
+                        + ", username: " + like + ", dislikes" + dislike);
 
+                int likes = Integer.parseInt(like);
+                int unlikes = Integer.parseInt(dislike);
+                list.add(new RowData(url,likes,unlikes,type));
             }
 
         } catch (JSONException e) {
@@ -59,5 +71,8 @@ public class URLFetch extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPostExecute(String strFromDoInBg) {}
+    protected void onPostExecute(String strFromDoInBg) {
+        activity.adapter.itemList.addAll(list);
+        activity.adapter.notifyDataSetChanged();
+    }
 }
