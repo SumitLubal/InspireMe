@@ -10,10 +10,9 @@ import android.widget.Toast;
 public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     public ImageView wonderImage;
-
-
-
+    public String URL;
     public TextView wonderName;
+
     public RecyclerViewHolder(View itemView) {
         super(itemView);
         //implementing onClickListener
@@ -25,7 +24,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View view) {
         //Every time you click on the row toast is displayed
-        Toast.makeText(view.getContext(),  "This is ",Toast.LENGTH_LONG).show();
+        Toast.makeText(view.getContext(),  "This is "+URL,Toast.LENGTH_SHORT).show();
     }
 
 
@@ -45,4 +44,10 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
         this.wonderImage = wonderImage;
     }
 
+    public void setReferenceURL(String url) {
+        this.URL = url;
+    }
+    public String  getReferenceURL(){
+        return URL;
+    }
 }

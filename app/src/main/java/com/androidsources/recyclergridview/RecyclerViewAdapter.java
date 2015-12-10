@@ -2,20 +2,14 @@ package com.androidsources.recyclergridview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.inputmethodservice.Keyboard;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
@@ -40,8 +34,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
         Log.d("RecyclingTest", "onBindViewHolder method is called");
         holder.wonderName.setText(itemList.get(position).getLikesAsAString());
-
         ImageLoader imageLoader = ImageLoader.getInstance();
+        if(holder.getReferenceURL() == null){
+            holder.setReferenceURL(itemList.get(position).getWonderImageURL());
+        }
         if(itemList.get(position).getWonderImageURL()==null){
             Log.d("Info", "URL is null");
             //holder.wonderImage.setImageResource(R.drawable.notfound);
