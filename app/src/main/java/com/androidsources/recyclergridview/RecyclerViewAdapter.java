@@ -52,7 +52,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                 imageLoader.displayImage(itemList.get(position).getWonderImageURL(), holder.wonderImage);
                 ImageSize targetSize = new ImageSize(MainActivity.width, MainActivity.height); // result Bitmap will be fit to this size
 
-                imageLoader.loadImage(itemList.get(position).getWonderImageURL(), targetSize, new SimpleImageLoadingListener() {
+                imageLoader.loadImage(itemList.get(position).getWonderImageURL(), targetSize,MainActivity.options, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         for (int i = 0; i < itemList.size(); i++) {

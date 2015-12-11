@@ -21,7 +21,7 @@
             android:contentDescription="@string/action_settings"
             android:layout_centerInParent="true"
             android:alpha="0.9"
-            android:src="@drawable/tajmahal"
+            android:src="@drawable/ic_error"
             android:scaleType="fitXY" />
 
         <!--name of the world wonder-->

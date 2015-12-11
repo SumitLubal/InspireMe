@@ -20,7 +20,7 @@ public class URLFetch extends AsyncTask<String, String, String> {
 
     // contacts JSONArray
     JSONArray dataJsonArr = null;
-    List<RowData> list = new ArrayList<RowData>();
+    List<RowData> list;
     public URLFetch(MainActivity main_activity) {
         setActiviy(main_activity);
     }
@@ -37,42 +37,119 @@ public class URLFetch extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... ar) {
         try {
-            // instantiate our json parser
-            JsonParser jParser = new JsonParser();
-
-            // get json string from url
-            JSONObject json = jParser.getJSONFromUrl(yourJsonStringUrl);
-
-            // get the array of users
-            dataJsonArr = json.getJSONArray("urls");
-
-            // loop through all users
-            for (int i = 0; i < dataJsonArr.length(); i++) {
-                JSONObject c = dataJsonArr.getJSONObject(i);
-                // Storing each json item in variable
-                String type = c.getString("type");
-                String url = c.getString("url");
-                String like = c.getString("like");
-                String dislike = c.getString("dislike");
-
-                // show the values in our logcat
-                Log.e(TAG, "firstname: " + type
-                        + ", lastname: " + url
-                        + ", username: " + like + ", dislikes" + dislike);
-
-                int likes = Integer.parseInt(like);
-                int unlikes = Integer.parseInt(dislike);
-                list.add(new RowData(url,likes,unlikes,type));
+            list = new ArrayList<RowData>();
+            list.addAll(activity.adapter.itemList);
+            //open cache
+            SamCache cacher = SamCache.getCacher();
+            //get from cache
+            List<RowData> fromCache=null,fromInternet=null;
+            if(cacher!=null){
+                fromCache = cacher.readAsList();
             }
+            //if internet is available then get data from internet
+            //yes-? then get data and check for repeatative data with Primary key as URL and return both
+            //no? return only cached data with checking if something is repeated
+
+            if(activity.isNetworkAvailable()){
+                fromInternet = getListFromInternet();
+                if(fromCache!=null&&fromInternet!=null){
+                    for(RowData row :fromInternet){
+                        if(!fromCache.contains(row)){
+                            fromCache.add(row);
+                            Log.d(TAG,"New URL in internet "+row.getWonderImageURL());
+                        }
+                    }
+                    for(RowData row : fromCache){
+                        if(!list.contains(row)){
+                            list.add(row);
+                        }
+                    }
+                    cacher.writeAsList(list);
+                    fromCache = null;
+                    fromInternet =null;
+                }else{
+                    if(fromCache!=null){
+                        for(RowData row: fromCache){
+                            if(!list.contains(row)){
+                                list.add(row);
+                            }
+                        }
+                        fromCache =null;
+                    }else {
+                        if (fromInternet != null) {
+                            for (RowData row : fromInternet) {
+                                if (!list.contains(row)) {
+                                    list.add(row);
+                                }
+                            }
+                            if (cacher!=null) {
+                                Log.d(TAG,"adding data to cache!!");
+                                cacher.writeAsList(list);
+                            }else{
+                                Log.d(TAG,"cacher is  null");
+                            }
+                            fromInternet = null;
+                        }
+                    }
+                }
+            }else
+                if(null!=fromCache){
+                    for(RowData row : fromCache){
+                        if(!list.contains(row)){
+                            list.add(row);
+                        }
+                    }
+                    fromCache=null;
+            }
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    private List<RowData> getListFromInternet() throws JSONException{
+        List<RowData> fromInternet = new ArrayList<RowData>();
+        // instantiate our json parser
+        JsonParser jParser = new JsonParser();
+
+        // get json string from url
+        JSONObject json = jParser.getJSONFromUrl(yourJsonStringUrl);
+
+        // get the array of users
+        dataJsonArr = json.getJSONArray("urls");
+
+        // loop through all users
+        for (int i = 0; i < dataJsonArr.length(); i++) {
+            JSONObject c = dataJsonArr.getJSONObject(i);
+            // Storing each json item in variable
+            String type = c.getString("type");
+            String url = c.getString("url");
+            String like = c.getString("like");
+            String dislike = c.getString("dislike");
+
+            // show the values in our logcat
+            Log.e(TAG, "firstname: " + type
+                    + ", lastname: " + url
+                    + ", username: " + like + ", dislikes" + dislike);
+
+            int likes = Integer.parseInt(like);
+            int unlikes = Integer.parseInt(dislike);
+            fromInternet.add(new RowData(url, likes, unlikes, type));
+        }
+        return fromInternet;
+    }
+
+
     @Override
     protected void onPostExecute(String strFromDoInBg) {
-        activity.adapter.itemList.addAll(list);
+        //activity.adapter.itemList.addAll(list);
+        for(RowData row:list){
+            if(!activity.adapter.itemList.contains(row)){
+                activity.adapter.itemList.add(row);
+            }
+        }
         activity.adapter.notifyDataSetChanged();
     }
 }

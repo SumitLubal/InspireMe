@@ -1,5 +1,11 @@
 package com.androidsources.recyclergridview;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,10 +21,13 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -35,30 +44,24 @@ public class MainActivity extends AppCompatActivity {
     RecyclerViewAdapter adapter;
     private PullToRefreshView mPullToRefreshView;
     public static final String TAG="MainActivity";
+    public static final int VERSION = 1;
+    public static  DisplayImageOptions options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //get device size
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        width=dm.widthPixels;
-        height=dm.heightPixels;
-        //setting up imageloader library which will do fetch of imagesFile cacheDir = StorageUtils.getCacheDirectory(context);
-        configureImageLoaderLibrary();
-        //Setting up the toolbar
+
         Toolbar toolBar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
-
         List<RowData> rowListItem = getRowList();
         layoutManager = new GridLayoutManager(MainActivity.this, 2);
-
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
-
         adapter = new RecyclerViewAdapter(MainActivity.this, rowListItem);
         recyclerView.setAdapter(adapter);
+        configureEverything();
         if(adapter!=null) {
             new URLFetch(this).execute();
             URLFetch.setActiviy(this);
@@ -66,10 +69,45 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Failed to start adapter",Toast.LENGTH_SHORT).show();
         }
         //adding pull to refresh interface
-        configPullToRefresh();
+
 
     }
 
+    private void configureEverything() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        width=dm.widthPixels;
+        height=dm.heightPixels;
+        //setting up imageloader library which will do fetch of imagesFile cacheDir = StorageUtils.getCacheDirectory(context);
+        configureImageLoaderLibrary();
+        //Setting up the toolbar
+        configPullToRefresh();
+        if(!isNetworkAvailable()){
+            showDailogueBox("Oops","Please enable internet access!");
+        }
+        //set cacher for URL'S
+        SamCache.configure(this);
+    }
+
+    void showDailogueBox(String title,String message){
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+
+    }
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     private void configureImageLoaderLibrary() {
         File cacheDir = StorageUtils.getCacheDirectory(this);
         ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(this);
@@ -80,13 +118,20 @@ public class MainActivity extends AppCompatActivity {
         builder.tasksProcessingOrder(QueueProcessingType.FIFO);
         builder.memoryCacheSizePercentage(13);
         builder.diskCache(new UnlimitedDiskCache(cacheDir));
-        builder.diskCacheSize(50 * 1024 * 1024);
-        builder.diskCacheFileCount(100);
-        builder.diskCacheFileNameGenerator(new HashCodeFileNameGenerator());
         builder.imageDownloader(new BaseImageDownloader(this));
         builder.defaultDisplayImageOptions(DisplayImageOptions.createSimple());
         ImageLoaderConfiguration config = builder.build();
         ImageLoader.getInstance().init(config);
+        options = new DisplayImageOptions.Builder()
+            .showImageOnFail(R.drawable.ic_error)
+            .resetViewBeforeLoading(true)
+            .cacheOnDisk(true)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .considerExifParams(true)
+            .displayer(new FadeInBitmapDisplayer(300))
+            .build();
+
     }
 
     private void configPullToRefresh() {

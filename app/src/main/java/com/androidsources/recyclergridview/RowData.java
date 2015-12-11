@@ -23,7 +23,6 @@ public class RowData {
         this.category = category;
     }
 
-
     public int getLikes() {
         return likes;
     }
@@ -73,5 +72,20 @@ public class RowData {
         this.wonderImageURL = wonderImageURL;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RowData rowData = (RowData) o;
+
+        return !(wonderImageURL != null ? !wonderImageURL.equals(rowData.wonderImageURL) : rowData.wonderImageURL != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return wonderImageURL != null ? wonderImageURL.hashCode() : 0;
+    }
 }
 
