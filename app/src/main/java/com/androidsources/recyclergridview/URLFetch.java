@@ -13,7 +13,8 @@ import java.util.List;
 public class URLFetch extends AsyncTask<String, String, String> {
 
     final String TAG = "AsyncTaskParseJson.java";
-    MainActivity activity;
+    static MainActivity activity;
+
     // set your json string url here
     String yourJsonStringUrl = "http://sam042.netau.net/fetch.php";
 
@@ -21,18 +22,21 @@ public class URLFetch extends AsyncTask<String, String, String> {
     JSONArray dataJsonArr = null;
     List<RowData> list = new ArrayList<RowData>();
     public URLFetch(MainActivity main_activity) {
+        setActiviy(main_activity);
+    }
+    public URLFetch(){
+
+    }
+    public static void setActiviy(MainActivity main_activity){
         activity = main_activity;
     }
-
 
     @Override
     protected void onPreExecute() {}
 
     @Override
     protected String doInBackground(String... ar) {
-
         try {
-
             // instantiate our json parser
             JsonParser jParser = new JsonParser();
 
@@ -44,9 +48,7 @@ public class URLFetch extends AsyncTask<String, String, String> {
 
             // loop through all users
             for (int i = 0; i < dataJsonArr.length(); i++) {
-
                 JSONObject c = dataJsonArr.getJSONObject(i);
-
                 // Storing each json item in variable
                 String type = c.getString("type");
                 String url = c.getString("url");
@@ -62,11 +64,9 @@ public class URLFetch extends AsyncTask<String, String, String> {
                 int unlikes = Integer.parseInt(dislike);
                 list.add(new RowData(url,likes,unlikes,type));
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

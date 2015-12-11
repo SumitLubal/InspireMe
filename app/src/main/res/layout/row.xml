@@ -1,5 +1,6 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -30,10 +31,18 @@
             android:layout_height="wrap_content"
             android:gravity="bottom|center"
             android:textSize="20sp"
-            android:text="Taj Mahal"
+            android:text=""
             android:textColor="#ffffff"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            wheel:matProg_barColor="#5588FF" />
 
     </RelativeLayout>
 

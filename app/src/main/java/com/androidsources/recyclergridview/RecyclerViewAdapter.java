@@ -33,7 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
         Log.d("RecyclingTest", "onBindViewHolder method is called");
-        holder.wonderName.setText(itemList.get(position).getLikesAsAString());
+        holder.wonderName.setText(itemList.get(position).getLikesAsAString() + " says awesome");
         ImageLoader imageLoader = ImageLoader.getInstance();
         if(holder.getReferenceURL() == null){
             holder.setReferenceURL(itemList.get(position).getWonderImageURL());
@@ -44,6 +44,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         }else{
             if(itemList.get(position).getDownloadedImage()!=null){
                 holder.wonderImage.setImageBitmap(itemList.get(position).getDownloadedImage());
+                if(holder.wheel.isEnabled()) {
+                    holder.wheel.setEnabled(false);
+                    holder.wheel.stopSpinning();
+                }
             }else {
                 imageLoader.displayImage(itemList.get(position).getWonderImageURL(), holder.wonderImage);
                 ImageSize targetSize = new ImageSize(MainActivity.width, MainActivity.height); // result Bitmap will be fit to this size
@@ -56,6 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                                 //found object with refered URL
                                 itemList.get(i).setDownloadedImage(loadedImage);
                                 notifyDataSetChanged();
+
                                 Log.d("Recycler View", "Image is downloaded");
                             }
                         }
