@@ -1,7 +1,9 @@
 package com.androidsources.recyclergridview;
 
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,19 +93,23 @@ public class URLFetch extends AsyncTask<String, String, String> {
                             fromInternet = null;
                         }
                     }
+                    cacher.writeAsList(list);
                 }
-            }else
-                if(null!=fromCache){
-                    for(RowData row : fromCache){
-                        if(!list.contains(row)){
+            }else {
+                Log.d(TAG, "no internet connection");
+                if (null != fromCache) {
+                    for (RowData row : fromCache) {
+                        if (!list.contains(row)) {
                             list.add(row);
                         }
                     }
-                    fromCache=null;
+                    fromCache = null;
+                }
             }
 
-
-        } catch (JSONException e) {
+        } catch (JSONException e ) {
+            e.printStackTrace();
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;

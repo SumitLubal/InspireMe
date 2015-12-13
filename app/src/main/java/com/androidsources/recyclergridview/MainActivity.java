@@ -83,14 +83,17 @@ public class MainActivity extends AppCompatActivity {
         //Setting up the toolbar
         configPullToRefresh();
         if(!isNetworkAvailable()){
-            showDailogueBox("Oops","Please enable internet access!");
+            showDailogueBox("Oops", "Please enable internet access!");
         }
         //set cacher for URL'S
         SamCache.configure(this);
     }
 
-    void showDailogueBox(String title,String message){
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+    private void showDailogueBox(String title,String message){
+        showDailogueBox(title,message,MainActivity.this);
+    }
+    void showDailogueBox(String title,String message,Context context){
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         alertDialog.show();
-
     }
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

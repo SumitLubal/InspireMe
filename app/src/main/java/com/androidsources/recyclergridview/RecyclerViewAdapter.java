@@ -2,6 +2,9 @@ package com.androidsources.recyclergridview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +17,10 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
-    List<RowData> itemList;
-    private Context context;
+    static public List<RowData> itemList;
+    private MainActivity context;
 
-    public RecyclerViewAdapter(Context context, List<RowData> itemList) {
+    public RecyclerViewAdapter(MainActivity context, List<RowData> itemList) {
         this.itemList = itemList;
         this.context = context;
     }
@@ -26,7 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("RecyclingTest","onCreateViewHolder method is called");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, null);
-        RecyclerViewHolder viewHolder = new RecyclerViewHolder(view);
+        RecyclerViewHolder viewHolder = new RecyclerViewHolder(view,context);
         return viewHolder;
     }
 
@@ -61,7 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                                 itemList.get(i).setDownloadedImage(loadedImage);
                                 notifyDataSetChanged();
 
-                                Log.d("Recycler View", "Image is downloaded");
+                                Log.d("Recycler View", "Image is downloaded!!");
                             }
                         }
                     }
@@ -76,6 +79,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
             }*/
         }
 
+    }
+    private Bitmap createShadowBitmap(Bitmap originalBitmap) {
+        BlurMaskFilter blurFilter = new BlurMaskFilter(5, BlurMaskFilter.Blur.OUTER);
+        Paint shadowPaint = new Paint();
+        shadowPaint.setMaskFilter(blurFilter);
+
+        int[] offsetXY = new int[2];
+        Bitmap shadowImage = originalBitmap.extractAlpha(shadowPaint, offsetXY);
+
+    /* Need to convert shadowImage from 8-bit to ARGB here. */
+        Bitmap shadowImage32 = shadowImage.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas c = new Canvas(shadowImage32);
+        c.drawBitmap(originalBitmap, -offsetXY[0], -offsetXY[1], null);
+
+        return shadowImage32;
     }
 
     @Override
