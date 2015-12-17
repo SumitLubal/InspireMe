@@ -51,7 +51,6 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View view) {
         //Every time you click on the row toast is displayed
-        Toast.makeText(view.getContext(),  "This is "+URL,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(activity, fullscreenimageactivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("currentitem",URL);

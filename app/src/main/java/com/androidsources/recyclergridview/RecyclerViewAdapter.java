@@ -48,6 +48,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                 holder.wheel.setEnabled(false);
                 holder.wonderImage.setImageBitmap(itemList.get(position).getDownloadedImage());
                 holder.getWheel().stopSpinning();
+                holder.getWheel().setVisibility(View.GONE);
             }else {
                 imageLoader.displayImage(itemList.get(position).getWonderImageURL(), holder.wonderImage);
                 ImageSize targetSize = new ImageSize(MainActivity.width-MainActivity.width/4, MainActivity.height-MainActivity.height/4); // result Bitmap will be fit to this size
@@ -61,6 +62,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                                 itemList.get(i).setDownloadedImage(loadedImage);
                                 holder.getWheel().stopSpinning();
                                 holder.getWheel().setEnabled(false);
+                                holder.getWheel().setVisibility(View.GONE);
                                 notifyDataSetChanged();
                                 Log.d("Recycler View", "Image is downloaded!!");
                             }

@@ -60,6 +60,7 @@ public class fullscreenimageactivity extends AppCompatActivity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
 
+    boolean buttonVisible = true;
     private boolean mVisible;
     private ViewPager mViewPager;
     private CustomPagerAdapter mCustomPagerAdapter;
@@ -137,6 +138,13 @@ public class fullscreenimageactivity extends AppCompatActivity {
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
+    public void onclickImage(View V){
+        Log.d("fullscrreen","image clicked");
+        mCustomPagerAdapter.share.setEnabled(false);
+        mCustomPagerAdapter.like.setEnabled(false);
+        mCustomPagerAdapter.dislike.setEnabled(false);
+
+    }
     public void onClickLike(View V){
         String likeMsg[] = {"Awesome","Cool","Writer is happy","I like it too!","Thats awesome","Keep going on","You will achieve it!"};
         int random = mCustomPagerAdapter.randomWithRange(0, likeMsg.length - 1);
