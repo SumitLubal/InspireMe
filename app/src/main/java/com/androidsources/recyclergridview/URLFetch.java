@@ -59,6 +59,10 @@ public class URLFetch extends AsyncTask<String, String, String> {
                         if(!fromCache.contains(row)){
                             fromCache.add(row);
                             Log.d(TAG,"New URL in internet "+row.getWonderImageURL());
+                        }else{
+                            //this will remove row and add so to save date
+                            fromCache.remove(row);
+                            fromCache.add(row);
                         }
                     }
                     for(RowData row : fromCache){

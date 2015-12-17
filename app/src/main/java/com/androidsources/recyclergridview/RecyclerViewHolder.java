@@ -1,9 +1,11 @@
 package com.androidsources.recyclergridview;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -24,7 +26,16 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     public ImageView wonderImage;
     public String URL;
     public TextView wonderName;
-    ProgressWheel wheel;
+
+    public ProgressWheel getWheel() {
+        return wheel;
+    }
+
+    public void setWheel(ProgressWheel wheel) {
+        this.wheel = wheel;
+    }
+
+    ProgressWheel wheel ;
     public RecyclerViewHolder(View itemView,MainActivity activity) {
         super(itemView);
         //implementing onClickListener
@@ -32,11 +43,10 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
         wonderImage = (ImageView)itemView.findViewById(R.id.wonder_image);
         wonderName = (TextView)itemView.findViewById(R.id.wonder_name);
-        wheel = (ProgressWheel)itemView.findViewById(R.id.progress_wheel);
-        wheel.setBarColor(Color.BLUE);
-        wheel.setEnabled(true);
-        wheel.spin();
+        wheel = (ProgressWheel) itemView.findViewById(R.id.progress_wheel);
+
     }
+
 
     @Override
     public void onClick(View view) {
@@ -48,7 +58,11 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
         intent.putExtras(bundle);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(activity, (View) wonderImage, "profile");
-        activity.startActivity(intent,options.toBundle());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            activity.startActivity(intent, options.toBundle());
+        }else{
+            activity.startActivity(intent);
+        }
     }
 
 

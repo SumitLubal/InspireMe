@@ -5,7 +5,6 @@
     android:orientation="vertical">
 
     <!--including the toobar-->
-    <include layout="@layout/toolbar" />
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"

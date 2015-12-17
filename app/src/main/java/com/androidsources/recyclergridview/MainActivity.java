@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //get device size
 
-        Toolbar toolBar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolBar);
         List<RowData> rowListItem = getRowList();
         layoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
@@ -64,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         configureEverything();
         if(adapter!=null) {
             new URLFetch(this).execute();
+            mPullToRefreshView.startLayoutAnimation();
             URLFetch.setActiviy(this);
         }else{
             Toast.makeText(this,"Failed to start adapter",Toast.LENGTH_SHORT).show();

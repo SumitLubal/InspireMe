@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/imageView"
-        android:transitionName="profile"/>
-</LinearLayout>
+        android:transitionName="profile"
+        android:src="@drawable/buildings"/>
+
+    <Button
+        android:id="@+id/unlikeBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/unlike"
+        android:layout_alignTop="@+id/likeBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="onClickUnlike" />
+
+    <Button
+        android:id="@+id/shareBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/share"
+        android:layout_alignTop="@+id/unlikeBtn"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickShare" />
+
+    <Button
+        android:id="@+id/likeBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/like"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="45dp"
+        android:onClick="onClickLike" />
+</RelativeLayout>
